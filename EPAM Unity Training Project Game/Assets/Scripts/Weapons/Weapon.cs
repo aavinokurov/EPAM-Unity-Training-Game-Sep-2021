@@ -8,11 +8,11 @@ namespace EPAMUnityTraining.Weapons
 {
     public abstract class Weapon : MonoBehaviour
     {
-        public Bullet bullet;
-        public Transform firePoint;
-        public int maxAmmo = 10;
-        public float reloadTime = 5f;
         public bool isReloading;
+        [SerializeField] protected Bullet bullet;
+        [SerializeField] protected Transform firePoint;
+        [SerializeField] protected float reloadTime = 5f;
+        [SerializeField] protected int maxAmmo = 10;
 
         protected IObjectPoolerService objectPoolerService;
         protected int currentAmmo = 0;
@@ -20,15 +20,14 @@ namespace EPAMUnityTraining.Weapons
         protected void Awake()
         {
             objectPoolerService = ServiceLocator.Current.Get<IObjectPoolerService>();
-            bullet.direction = firePoint;
-            if (currentAmmo == 0)
-            {
-                currentAmmo = maxAmmo;
-            }
             objectPoolerService.AddToPool(bullet, currentAmmo);
+
+            bullet.direction = firePoint;
+            currentAmmo = maxAmmo;
         }
 
         public abstract void Shoot();
+
         protected IEnumerator Reload()
         {
             isReloading = true;

@@ -1,6 +1,7 @@
 ﻿using EPAMUnityTraining.Interfaces;
 using EPAMUnityTraining.Services.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace EPAMUnityTraining.Services
@@ -30,23 +31,22 @@ namespace EPAMUnityTraining.Services
 
         public void SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
         {
-            if (!_poolDictionary.TryGetValue(tag, out var objectToSpawn))
+            if (!_poolDictionary.TryGetValue(tag, out var objects))
             {
                 Debug.Log($"Pool with tag: {tag} doesn't excist.");
                 return;
             }
 
-            for (int i = 0; i < objectToSpawn.Count; i++)
+            var objectToSpawn = objects.FirstOrDefault(o => !o.activeInHierarchy);
+            if (objectToSpawn == null)
             {
-                if (!objectToSpawn[i].activeInHierarchy)
-                {
-                    objectToSpawn[i].SetActive(true);
-                    objectToSpawn[i].transform.position = position;
-                    objectToSpawn[i].transform.rotation = rotation;
-                    objectToSpawn[i].GetComponent<IPooledObject>()?.OnObjectSpawn();
-                    return;
-                }
+                return;
             }
+
+            objectToSpawn.SetActive(true);
+            objectToSpawn.transform.position = position;
+            objectToSpawn.transform.rotation = rotation;
+            objectToSpawn.GetComponent<IPooledObject>()?.OnObjectSpawn();
         }
     }
 }

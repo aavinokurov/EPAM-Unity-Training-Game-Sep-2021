@@ -11,7 +11,7 @@ namespace EPAMUnityTraining
     {
         public Camera mainCamera;
         [Range(0, 10)] public float speed = 5f;
-        public Weapon[] weapons;
+        [SerializeField] private Weapon[] weapons;
 
         private IInputService inputService;
         private IMovementService movementService;
@@ -54,7 +54,7 @@ namespace EPAMUnityTraining
 
         private void Shoot()
         {
-            if (inputService.GetKeyEDown() && indexWeapon < weapons.Length)
+            if (inputService.GetKeyEDown() && indexWeapon < weapons.Length - 1)
             {
                 indexWeapon++;
             }
